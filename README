@@ -15,3 +15,27 @@ pgstore
 
 fail2ban
 - crawls enabled plugins and get banned ips count
+
+== Some adaptions under centos 7.8 ==
+module path:
+from fail2ban.client.csocket import CSocket
+from fail2ban.client.configurator import Configurator
+
+permissions for collectd:
+r permission for /etc/fail2ban/fail2ban.local 
+rw permisson for /var/run/fail2ban/fail2ban.sock
+
+Note: 
+Every time, fail2ban service restart, the rw permission on /var/run/fail2ban/fail2ban.sock for collectd is lost. 
+Need to find some permanent, good and safe solution?
+
+a config example:
+cat /etc/collectd.d/collectd.conf.d/fail2ban.conf 
+LoadPlugin python
+<Plugin python>
+  ModulePath "/opt/collectd/lib_develop"
+  Import fail2ban2collectd
+</Plugin>
+
+ls -al /opt/collectd/lib_develop/fail2ban2collectd.py
+-rwxr-xr-x 1 root root 3923 Oct 12 11:19 /opt/collectd/lib_develop/fail2ban2collectd.py
